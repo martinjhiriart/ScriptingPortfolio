@@ -1,0 +1,1 @@
+Get-GPO -Name "Drive Mapping Abate"
