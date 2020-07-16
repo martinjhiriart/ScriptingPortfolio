@@ -1,0 +1,1 @@
+This directory houses all of the scripts I have written for Assembly Software, LLC.
