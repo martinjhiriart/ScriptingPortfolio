@@ -1,5 +1,5 @@
 #This is a cross-domain management utility developed by Martin Hiriart in order to help manage the Assembly Software LLC Hosted Environment
-function Get-Order66 {
+function Execute-Order66 {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)]
