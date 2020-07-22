@@ -1,10 +1,8 @@
-$serversOuPath ='OU=HV Host Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-$secondServersOuPath = 'OU=Storage Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
+$serversOuPath ='<DISTINGUISHED NAME OF OU WITH PHYSICAL SERVERS>'
 $servers = @()
 $servers += Get-ADComputer -SearchBase $serversOuPath -Filter * | Select-Object -ExpandProperty Name
-$servers += Get-ADComputer -SearchBase $secondServersOuPath -Filter * | Select-Object -ExpandProperty Name
 
-$SPLAPath = "C:\Automation\DevTools\Scripts\Hosting DevOps Repo\Output\Results\SPLA_Server_Audit2.xlsx"
+$SPLAPath = "<FILE PATH FOR FINAL REPORT>\SPLA_Server_Audit.xlsx"
 $ServerOSTypes = @()
 $ServerNumberOfCPUs = @()
 foreach($server in $servers)

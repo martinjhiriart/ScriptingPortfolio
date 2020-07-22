@@ -1,7 +1,7 @@
-$serversOuPath ='OU=HV Host Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
+$serversOuPath ='<DISTINGUISHED NAME OF OU WITH SERVERS>'
 $servers = Get-ADComputer -SearchBase $serversOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object -Descending
 
-$filePath = "C:\Automation\HostSerialNumberReport-" + "$(Get-Date -f MM-dd-yyyy)" + ".txt"
+$filePath = "<FILE PATH FOR REPORT>\HostSerialNumberReport-" + "$(Get-Date -f MM-dd-yyyy)" + ".txt"
 Clear-Content -LiteralPath $filePath
 foreach($pc in $servers)
 {

@@ -10,9 +10,9 @@ function Email{
         [Parameter(Mandatory)]
         [ValidateSet("Yes","No")]$AddAttachment
     )
-    $FromAddress = "sidious@trialworks.com"
-    $SMTP_Server = "smtp-relay.gmail.com"
-    $SMTP_Port = 587
+    $FromAddress = "<FROM ADDRESS>"
+    $SMTP_Server = "<SMTP SERVER>"
+    $SMTP_Port = "<SMTP PORT>"
     if($AddAttachment -eq "Yes")
     {
         $AttachmentPath = Read-Host "Enter Path to File to Attach"

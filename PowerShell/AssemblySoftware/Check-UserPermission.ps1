@@ -1,12 +1,12 @@
 $userSecurityGroup
 function Test-UserGroup {
     $groups = Get-ADPrincipalGroupMembership -Identity $env:USERNAME | Select-Object -ExpandProperty name
-    if($groups -like 'TWSupport')
+    if($groups -like '<AD GROUP 1>')
     {
-        supportSheev
+        "<FUNCTION OR CODE>"
     }
-    elseif ($groups -like  'TWHosting') {
-        vader
+    elseif ($groups -like  '<AD GROUP 2>') {
+        "<FUNCTION OR CODE>"
     }
     else{
         Write-Error -Message "Access Denied" -Category AuthenticationError
@@ -14,7 +14,7 @@ function Test-UserGroup {
         Exit
     }
 }
-function Login {
+function Check-UserPermission {
     #Checks to see if the current PowerShell session is elevated or not
     $admin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
     if(!$admin)
@@ -27,6 +27,4 @@ function Login {
         Write-Error -Message "Cannot Run in Elevated Shell" -Category AuthenticationError
     }
 }
-
-Login
 
