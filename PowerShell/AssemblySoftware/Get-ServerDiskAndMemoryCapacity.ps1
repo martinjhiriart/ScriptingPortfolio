@@ -1,8 +1,16 @@
-$ServersOuPath ='OU=RDP Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
+$ServersOuPath ='<DISTINGUISHED NAME OF OU THAT HOLDS SERVERS TO QUERY>'
 $Servers = Get-ADComputer -SearchBase $ServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
 
-$filePath = "C:\Automation\DedicatedRDPVMResourceReport-" + "$(Get-Date -f MM-dd-yyyy)" + ".txt"
-Clear-Content -LiteralPath $filePath
+$filePath = "<FILE PATH FOR FINAL OUTPUT>\PremiumRDPVMResourceReport-" + "$(Get-Date -f MM-dd-yyyy)" + ".txt"
+$FileExists = Test-Path -Path $filePath
+if($FileExists -eq $true)
+{
+    Clear-Content -LiteralPath $filePath
+}
+else {
+    New-Item -Path $filePath
+}
+
 foreach($pc in $Servers)
 {
     $disks = get-wmiobject -class "Win32_LogicalDisk" -namespace "root\CIMV2" -computername $pc
@@ -17,7 +25,7 @@ foreach($pc in $Servers)
                     if($total -lt $baseline)
                     {
                     "`n`tDrive",$disk.Name, "{0:N2} GB" -f $free 
-
+ 
                     }
                     else
                     {
