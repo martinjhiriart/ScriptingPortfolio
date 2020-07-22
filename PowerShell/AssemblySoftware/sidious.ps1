@@ -46,7 +46,7 @@ function Server_Select {
         }
         Default{
             Clear-Host
-            Get-Order66
+            Execute-Order66
         }
     }
 }
@@ -54,7 +54,7 @@ function Server_Select {
 function Maul_Virtual_Login {
     param(
         [Parameter(Mandatory)]
-        [ValidateSet("TWCustomer.local","NeedlesHosted.local","CS.local","GLF.local","PEJ.local","PWD.local","RLG.local","SLF.local")]$Domain,
+        [ValidateSet("<LIST OF VALID DOMAINS")]$Domain,
         [Parameter(Mandatory)]
         [String]$UserName,
         [Parameter(Mandatory)]
@@ -191,7 +191,7 @@ function Maul_Virtual {
             Default {
                 Pause
                 Clear-Host
-                Get-Order66
+                Execute-Order66
             }
         }
     }
@@ -216,7 +216,7 @@ function Maul_Virtual_Management {
         Default{
             Pause
             Clear-Host
-            Get-Order66
+            Execute-Order66
         }
     }
 }
@@ -351,7 +351,7 @@ function Maul_Physical {
             Default {
                 Pause
                 Clear-Host
-                Get-Order66
+                Execute-Order66
             }
         }
     }
@@ -364,7 +364,6 @@ function Maul_Physical_Management {
     Write-Host '==================================' -ForegroundColor Magenta
     Write-Host '1 - Connect to Management Interface' -ForegroundColor Yellow
     Write-Host '2 - RDP Connect to Server' -ForegroundColor Yellow
-    Write-Host '2 - Connect to Dell Remote Access Card' -ForegroundColor Yellow
     Write-Host '0 - Exit to Main Menu' -ForegroundColor Red
     $PhysMgmt_Console = Read-Host 'Select'
     switch($PhysMgmt_Console)
@@ -385,35 +384,10 @@ function Maul_Physical_Management {
             mstsc /v:$Physical_Server_FQDN
             Maul_Physical_Management
         }
-        3{
-            if($Manufacturer -eq 'Dell Inc.')
-            {
-                $device = "localhost"
-                $community = "mepush"
-                $retries = '2'
-                $timeout = '1000'
-                function Get-SNMP {
-                    Param ([string]$x)
-                    $snmp = New-Object -ComObject olePrn.OleSNMP
-                    $snmp.open($device,$community,$retries,$timeout)
-                    $snmp.get($x)
-                }
-
-                $DRAC_URL = Get-SNMP -x '.1.3.6.1.4.1.674.10892.1.1900.10.1.12.1.1'
-                Start-Process -FilePath $DRAC_URL
-                Maul_Physical_Management
-            }
-            else 
-            {
-                Write-Warning "Server is not a Dell Server. Please select a different option."
-                Pause
-                Maul_Physical_Management
-            }
-        }
         Default{
             Pause
             Clear-Host
-            Get-Order66
+            Execute-Order66
         }
     }
 }
@@ -430,9 +404,9 @@ function Malgus{
         [Parameter(Mandatory)]
         [ValidateSet("Yes","No")]$AddAttachment
     )
-    $FromAddress = "sidious@trialworks.com"
-    $SMTP_Server = "smtp-relay.gmail.com"
-    $SMTP_Port = 587
+    $FromAddress = "<FROM ADDRESS>"
+    $SMTP_Server = "<SMTP SERVER"
+    $SMTP_Port = "<SMTP PORT>"
     if($AddAttachment -eq "Yes")
     {
         $AttachmentPath = Read-Host "Enter Path to File to Attach"
@@ -445,53 +419,10 @@ function Malgus{
     Pause
     Tyranus
 }
-#This function allows the user to check the sizes of all the TWCustomer shares in the TWCustomer.local domain
-# function Plagueis {
-#     $path = '\\twcustomer.local\hosted\twcustomer'
-#     $share = "TWCustomer"
-
-#     $shareStats = @()
-#     #I NEED THE A
- 
-#     #Make sure the A drive letter is free. It will throw an error if it's already in use. Chill. 
-
-#     Remove-PSDrive -Name A | out-null
-
-
-#     for ($i=1; $i -lt 30; $i++) {
-
-
-
-#         New-PSDrive -Persist -Name "A" -Root $path$i -PSProvider FileSystem | out-null
-
-#         $shareStats += '--------------------------'
-#         Get-DfsrFolder -Name $share$i | Select-Object Name | Format-Table -AutoSize
-
-#         Get-DfsrReplicatioNGroup -Name $share$i | Get-DfsrConnection | Format-Table -AutoSize
-    
-#            $disk = Get-WmiObject -Class Win32_logicaldisk -Filter "DeviceID = 'A:'" 
-           
-#         $shareStats += $share+$i
-#         $shareStats += $disk | Select-Object -Property @{L='Free Space';E={"{0:N2} GB" -f ($_.FreeSpace /1GB)}},@{L="Total Space";E={"{0:N2} GB" -f ($_.Size/1GB)}} | Format-Table -AutoSize
-
-#         #Write-Host $var1, $var2, $diskinfo -NoNewline | Format-Table -AutoSize
-
-#         Remove-PSDrive -Name A
-
-#     }
-#     $shareStats += '--------------------------'
-#     $shareStats | Out-File -FilePath "C:\Automation\Audit\TWCustomer Shares Space Audit.txt"
-#     Invoke-Item -Path "C:\Automation\Audit\TWCustomer Shares Space Audit.txt"
-#     Pause
-#     Tyranus
-# }
 #This function provides a comprehensive audit of the manufacturers of the physical servers in the environment
 function Krayt {
-    $serversOuPath ='OU=HV Host Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-    $secondServersOuPath = 'OU=Storage Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-    $servers = @()
-    $servers += Get-ADComputer -SearchBase $serversOuPath -Filter * | Select-Object -ExpandProperty Name
-    $servers += Get-ADComputer -SearchBase $secondServersOuPath -Filter * | Select-Object -ExpandProperty Name
+    $serversOuPath ='<DISTINGUISHED NAME OF OU WITH PHYSICAL SERVERS>'
+    $servers = Get-ADComputer -SearchBase $serversOuPath -Filter * | Select-Object -ExpandProperty Name
 
     $superMicros = @()
     $dells = @()
@@ -525,8 +456,8 @@ function Krayt {
         $dellInfo += Get-WmiObject -ComputerName $dell Win32_ComputerSystem | Select-Object Name, Manufacturer, Model
     }
     $allServers = $dellInfo + $superMicroInfo | Sort-Object -Property Name
-    $allServers | Export-Excel -AutoSize -TableName "PhysicalServerAudit" -WorksheetName "Physical Servers by OEM" -Path "C:\Automation\DevTools\Scripts\Hosting DevOps Repo\Output\Results\PhysicalServersByOEM.xlsx" 
-    $failures | Out-File -FilePath "C:\Automation\DevTools\Scripts\Hosting DevOps Repo\Output\Results\PhysicalServerRPCFailures.txt"
+    $allServers | Export-Excel -AutoSize -TableName "PhysicalServerAudit" -WorksheetName "Physical Servers by OEM" -Path "<FILE PATH FOR REPORT>\PhysicalServersByOEM.xlsx" 
+    $failures | Out-File -FilePath "<FILE PATH FOR REPORT>\PhysicalServerRPCFailures.txt"
     $CountOfDells = ($dells).count
     $CountofSuperMicros = ($superMicros).count
     Write-Host "==============================" -ForegroundColor Magenta
@@ -541,7 +472,7 @@ function Krayt {
     switch($ViewServerCSV)
     {
         "Y"{
-            Start-Process -FilePath "C:\Automation\Audit\PhysicalServers.csv"
+            Start-Process -FilePath "<FILE PATH FOR REPORT>\PhysicalServers.csv"
             Pause
             Tyranus
         }
@@ -559,18 +490,16 @@ function Tyranus {
     Write-Host '========================' -ForegroundColor Magenta
     Write-Host '1 - Run Host VM Inventory Report' -ForegroundColor Yellow
     Write-Host '2 - Get List of Servers Based on Manufacturer' -ForegroundColor Yellow
-    #Write-Host '3 - Get Sizes of TWCustomer Shares' -ForegroundColor Yellow
-    Write-Host '3 - Open a SysAid Ticket' -ForegroundColor Yellow
-    Write-Host '4 - Send Email from PowerShell' -ForegroundColor Yellow
+    Write-Host '3 - Send Email from PowerShell' -ForegroundColor Yellow
     Write-Host '0 - Exit to Main Menu' -ForegroundColor Red
     $Audit_Console = Read-Host "Select"
     
     switch($Audit_Console)
     {
         1{
-            $Physical_ServersOuPath ='OU=HV Host Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
+            $Physical_ServersOuPath ='<DISTINGUISHED NAME OF OU WITH PHYSICAL SERVERS>'
             $Physical_Servers = Get-ADComputer -SearchBase $Physical_ServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object -Descending
-            $InventoryReport_FilePath = "C:\Reports\HostVMInventoryReport-" + "$(Get-Date -f MM-dd-yyyy)"+ ".csv"
+            $InventoryReport_FilePath = "<FILE PATH FOR REPORT>\HostVMInventoryReport-" + "$(Get-Date -f MM-dd-yyyy)"+ ".csv"
             $CheckForFile = Test-Path -Path $InventoryReport_FilePath
             if($CheckForFile -eq $true)
             {
@@ -580,7 +509,7 @@ function Tyranus {
                 Invoke-Command -HideComputerName $Physical_Server {Get-VM | Where-Object {($_.Name -notlike "*-*OFF")} | Select-Object Name,State,PSComputerName} | Select-Object Name,State,PSComputerName | Select-Object -ExcludeProperty RunspaceId,PSShowComputerName | Export-Csv -NoTypeInformation -Append -Path $InventoryReport_FilePath 
             }
         
-            $uri = "https://outlook.office.com/webhook/36c3511c-5d2c-4c5c-bd95-590992f083da@c18603c9-c364-4d5f-a43f-ee2024d5eebd/IncomingWebhook/4396711558814aae97d8bd0a9baaf2f0/8d996b17-a4e1-42c8-ade3-b5fe682d88b4"
+            $uri = "<TEAMS URI FOR INCMOING WEBHOOK>"
             $body = ConvertTo-JSON @{
             text = 'Host-VM Inventory Report Completed for ' + $(Get-Date)
             }
@@ -589,22 +518,12 @@ function Tyranus {
         2{
             Krayt
         }
-        # 3{
-        #     Plagueis
-        # }
         3{
-            $TicketID = Read-Host "Enter SysAid Ticket Number"
-            $TicketURL = "https://assembly.sysaidit.com/SREdit.jsp?id=" + $TicketID + "&fromId=List&isFromAll=true"
-            Start-Process -FilePath $TicketURL
-            Pause
-            Tyranus
-        }
-        4{
             Malgus
         }
         Default {
             Clear-Host
-            Get-Order66
+            Execute-Order66
         }
     }
 }
@@ -612,12 +531,12 @@ function Tyranus {
 function Malak {
     Read-Host 'Enter Customer Name'
     $NewCustomerOUName = Read-Host
-    New-ADOrganizationalUnit -Name $NewCustomerOUName -Path "OU=Customers,DC=TWCustomer,DC=local"
-    $DisabledUsersOUPath = "OU=DisabledUsers,OU=" + $NewCustomerOUName + ",OU=Customers,DC=TWCustomer,DC=local"
+    New-ADOrganizationalUnit -Name $NewCustomerOUName -Path "<DISTINGUISHED NAME FOR NEW OU>"
+    $DisabledUsersOUPath = "OU=DisabledUsers,OU=" + $NewCustomerOUName + ",<DISTINGUISHED NAME FOR NEW DISABLEDUSERS OU>"
     #Creates DisabledUsers OU within the newly created OU so we have a default location to move disabled users to if if does not already exist.
     if(![adsi]::Exists("LDAP://$DisabledUsersOUPath"))
     {
-    $NewCustomerOUPath = "OU=" + $NewCustomerOUName + ",OU=Customers,DC=TWCustomer,DC=local"
+    $NewCustomerOUPath = "OU=" + $NewCustomerOUName + "<DISTINGUISHED NAME FOR NEW OU>"
     New-ADOrganizationalUnit -Name "DisabledUsers" -Path $NewCustomerOUPath
     }
     else
@@ -642,7 +561,7 @@ function Malak {
 #This function allows the user to create a new security group within a given customer's OU in AD
 function Sion {
     $CustomerOU = Read-Host 'Enter Customer OU'
-    $CustomerOUPath = "OU=" + $CustomerOU + ",OU=Customers,DC=TWCustomer,DC=local"
+    $CustomerOUPath = "OU=" + $CustomerOU + ",<DISTINGUISHED NAME FOR NEW SECURITY GROUP IN OU>"
     #This if statement checks if the entered OU exists
     if(![adsi]::Exists("LDAP://$CustomerOUPath"))
     {
@@ -671,7 +590,7 @@ function Sion {
         }
     }
 }
-#This function allows the user to create a new user account in Active Directory for the TWCustomer.local domain
+#This function allows the user to create a new user account in Active Directory
 function Revan {
     $CustomerFirstName = Read-Host "Enter User's First Name"
     $CustomerLastName = Read-Host "Enter User's Last Name"
@@ -679,8 +598,8 @@ function Revan {
     $CustomerADName = Read-Host "Enter User's AD Username"
     $CustomerPassword = Read-Host "Enter User's Password" -AsSecureString
     $CustomerGroupName = Read-Host "Enter Firm OU to create User in"
-    $OUPath = "OU=" + $CustomerGroupName + ",OU=Customers,DC=TWCustomer,DC=local"
-    $CustomerUPN = $CustomerADName+"@TWCustomer.local"
+    $OUPath = "OU=" + $CustomerGroupName + ",<DISTINGUISHED NAME FOR OU>"
+    $CustomerUPN = $CustomerADName+"@<UPN SUFFIX>"
     New-ADUser -GivenName $CustomerFirstName -Surname $CustomerLastName -Name $CustomerFullName -SamAccountName $CustomerADName -AccountPassword $CustomerPassword -CannotChangePassword $true -PasswordNeverExpires $true -Path $OUPath -Enabled $true -UserPrincipalName $CustomerUPN
     
     Clear-Host
@@ -772,7 +691,7 @@ function Vader {
         }
         Default{
             Clear-Host
-            Get-Order66
+            Execute-Order66
         }
     }
 }

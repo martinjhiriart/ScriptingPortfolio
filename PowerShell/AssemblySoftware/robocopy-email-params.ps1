@@ -27,16 +27,15 @@ function transfers{
     ################################################
         $logName = $CustomerName + " " + "$(Get-Date -f MM-dd-yyyy)" + ".log"
         $threads = "/mt:" + $ThreadCount
-        $logFile = "C:\RoboCopyLogs\" + $logName
+        $logFile = "<FILE PATH FOR ROBOCOPY LOGS>\" + $logName
         $log = "/log:" + $logFile
-        $SecurityPermissions = "/copy:DATSOU"
-        $fixedFlags = @("$threads", "$SecurityPermissions", "$log")
+        $fixedFlags = @("$threads", "$log")
         $cmdArgs = @("$SourceAddr", "$DestAddr", $dynFlags, $fixedFlags)
 
     #############################
     #   SMTP Relay Information  #
     #############################
-    $From = 'robocopy@trialworks.com'
+    $From = '<FROM ADDRESS>'
     while(($null -eq $To) -or ($To -eq ''))
     {
         $To = Read-Host "Who do I notify when the transfer is complete? (Enter Email Address)"
@@ -44,8 +43,8 @@ function transfers{
     $Subject = $customerName + ' RoboCopy Job Completed on ' + $(Get-Date)
     $Body = 'Attached below is the log for the RoboCopy transfer of ' + $customerName + "'s data"
     $Attachment = $logFile
-    $SMTPServer = 'smtp-relay.gmail.com'
-    $SMTPPort = '587'
+    $SMTPServer = '<SMTP SERVER>'
+    $SMTPPort = '<SMTP PORT>'
 
     robocopy @cmdArgs
     Send-MailMessage -From $From -To $To -Subject $Subject -Body $Body -SmtpServer $SMTPServer -Port $SMTPPort -Attachments $Attachment

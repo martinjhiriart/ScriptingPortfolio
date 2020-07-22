@@ -1,11 +1,11 @@
-$AllServersOuPath = #Distinguished name of OU in Active Directory that has the server you want to query
+$AllServersOuPath = "<DISTINGUISHED NAME OF OU IN AD THAT HAS THE SERVER(S) YOU WANT TO QUERY>"
 $AllServers = Get-ADComputer -SearchBase $AllServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
 
 
 
 $AllServersSorted = $AllServers | Sort-Object
 
-$filePath = #<File path to output report to> + "$(Get-Date -f MM-dd-yyyy)" + ".csv"
+$filePath = "<FILE PATH FOR FINAL REPORT>" + "$(Get-Date -f MM-dd-yyyy)" + ".csv"
 $FileExists = Test-Path -Path $filePath
 if($FileExists -eq $true)
 {
@@ -23,4 +23,4 @@ foreach($pc in $AllRDPVMsSorted)
     }
     $ServerOutput += $testObject
 }
-$ServerOutput | Export-Excel -Path $filePath -AutoSize -TableName RDPVMDiskData -WorksheetName "Server Disk Report"
+$ServerOutput | Export-Excel -Path $filePath -AutoSize -TableName ServerDiskData -WorksheetName "Server Disk Report"

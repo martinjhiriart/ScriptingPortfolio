@@ -1,10 +1,6 @@
-#$PremiumServersOuPath ='OU=Premium Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-#$PremiumServers = Get-ADComputer -SearchBase $PremiumServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
-$RDPServersOuPath ='OU=RDP Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-$RDPServers = Get-ADComputer -SearchBase $RDPServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
-$HawaiiServersOUPath = 'OU=Hawaii Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-$HawaiiServers = Get-ADComputer -SearchBase $HawaiiServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
-$AllServers = $HawaiiServers + $RDPServers | Sort-Object
+$ServersOUPath = '<DISTINGUISHED NAME OF OU WITH RDS SERVERS'
+$Servers = Get-ADComputer -SearchBase $ServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
+$AllServers = $Servers | Sort-Object
 foreach($Computer in $RDPServers){
     $Group = "Remote Desktop Users"
     $GetGroupUser = Get-CimInstance -Class Win32_GroupUser -Filter "GroupComponent=""Win32_Group.Domain='$Computer',Name='$Group'""" -ComputerName $Computer
@@ -13,7 +9,7 @@ foreach($Computer in $RDPServers){
     $Computer
     Write-Host "=================" 
     #Write-Host "Group:  $Group" 
-    Write-Host "Members:" 
+    Write-Host "Members:"  
  
     # Iterate through the group membership, and return the members.  
     If ($GetGroupUserPartComponent -eq $Null) 

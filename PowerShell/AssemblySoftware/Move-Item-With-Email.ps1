@@ -10,9 +10,9 @@ function Transfer-Item {
     )
     Move-Item -Path $FilePathOfItem -Destination $DestinationFilePath
 
-    $FromAddress = "powershell@trialworks.com"
-    $SMTPServer = "smtp-relay.gmail.com"
-    $SMTPPort = "587"
+    $FromAddress = "<FROM ADDRESS>"
+    $SMTPServer = "<SMTP SERVER INFO>"
+    $SMTPPort = "<SMTP PORT>"
 
     Send-MailMessage -To $EmailAddress -From $FromAddress -Subject "File Was Successfully Moved" -BodyAsHtml "The move from $FilePathOfItem to $DestinationFilePath has completed successfully" -SmtpServer $SMTPServer -Port $SMTPPort
 }
