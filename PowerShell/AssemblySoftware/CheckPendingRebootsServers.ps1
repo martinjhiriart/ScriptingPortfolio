@@ -1,22 +1,6 @@
-# [CmdletBinding()]
-# param(
-#     [Parameter(Mandatory)]
-#     [ValidateNotNullOrEmpty()]
-#     [string[]]$ComputerName,
-	
-#     [Parameter()]
-#     [ValidateNotNullOrEmpty()]
-#     [pscredential]$Credential
-# )
-$PremiumServersOuPath ='OU=Premium Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-$PremiumServers = Get-ADComputer -SearchBase $PremiumServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
-$RDPServersOuPath ='OU=RDP Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-$RDPServers = Get-ADComputer -SearchBase $RDPServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
-$HawaiiServersOUPath = 'OU=Hawaii Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-$HawaiiServers = Get-ADComputer -SearchBase $HawaiiServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
+$ServersOUPath = '<OU OF SERVERS TO QUERY>'
+$ComputerName = Get-ADComputer -SearchBase $ServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
 
-$AllRDPVMs = $PremiumServers + $RDPServers + $HawaiiServers
-$ComputerName = $AllRDPVMs | Sort-Object
 
 
 $ErrorActionPreference = 'SilentlyContinue'

@@ -1,12 +1,12 @@
 $FileName = "EmployeeAudit-" + "$(Get-Date -Format MM-dd-yyyy)" + ".xlsx"
-$FilePath = "C:\Automation\DevTools\Scripts\Hosting DevOps Repo\Output\Results\" + $FileName
+$FilePath = "<FILE PATH FOR RESULT>\" + $FileName
 $FileCheck = Test-Path -Path $FilePath
 if($FileCheck)
 {
     Remove-Item $FilePath
 }
 
-    $InternalEmployees = Get-ADUser -SearchBase "OU=RDPAdmins,OU=Corporate Users,DC=TWCustomer,DC=local" -Filter * | Select-Object Name, SamAccountName, Enabled
+    $InternalEmployees = Get-ADUser -SearchBase "<DISTINGUISHED NAME OF OU WHERE EMPLOYEE USERS ARE>" -Filter * | Select-Object Name, SamAccountName, Enabled
     $AuditResults = @()
     $DisabledAccounts = New-ConditionalText -Text "FALSE" -Range "C:C"
     $DomainAdmin = New-ConditionalText -Text "TRUE" -Range "E:E" -ConditionalTextColor DarkGreen -BackgroundColor LightGreen
@@ -20,15 +20,15 @@ if($FileCheck)
                 ADUserName = $Employee.SamAccountName
                 Enabled = $Employee.Enabled
                 Group = $Group
-                GroupIsDomainAdmin = if($Group -eq "TWAdmins" -or $Group -eq "TWServiceAccounts" -or $Group -eq "TWHosting")
+                GroupIsDomainAdmin = if($Group -eq "<DOMAINGROUPNAME1>" -or $Group -eq "<DOMAINGROUPNAME2>" -or $Group -eq "<DOMAINGROUPNAME3>")
                 {
                     $true
                 }
                 else {
                     $false
                 }
-            }
+            } 
             $AuditResults += $AuditObject
         }
     }
-    $AuditResults | Sort-Object EmployeeName | Export-Excel -Path $FilePath -AutoSize -TableName TWCustomerInternalEmployeeAudit -WorksheetName "TWC Employee Audit" -ConditionalText $DomainAdmin,$DisabledAccounts #-IncludePivotTable -PivotRows = "EmployeeName" #-PivotData = 'ADUserName' -PivotFilter = 'Group'
+    $AuditResults | Sort-Object EmployeeName | Export-Excel -Path $FilePath -AutoSize -TableName TWCustomerInternalEmployeeAudit -WorksheetName "Employee Audit" -ConditionalText $DomainAdmin,$DisabledAccounts
