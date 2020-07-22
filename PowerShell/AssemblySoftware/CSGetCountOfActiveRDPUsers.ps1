@@ -5,4 +5,4 @@ foreach ($Customer in $Customers){
     $ActiveADUsers += Get-ADUser -Filter {Enabled -eq 'True'} -SearchBase $Customer | Select-Object -ExpandProperty Name | Sort-Object
 }
 $ActiveADUsers 
-#| Measure-Object | Select-Object Count
+#| Measure-Object | Select-Object Count 

@@ -1,9 +1,9 @@
-$RDPServersOuPath ='OU=RDP Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
-$RDPServers = Get-ADComputer -SearchBase $RDPServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
+$ServersOuPath ='OU=RDP Servers,OU=Corporate Servers,DC=TWCustomer,DC=local'
+$Servers = Get-ADComputer -SearchBase $ServersOuPath -Filter * | Select-Object -ExpandProperty Name | Sort-Object
 
 $filePath = "C:\Automation\DedicatedRDPVMResourceReport-" + "$(Get-Date -f MM-dd-yyyy)" + ".txt"
 Clear-Content -LiteralPath $filePath
-foreach($pc in $RDPServers)
+foreach($pc in $Servers)
 {
     $disks = get-wmiobject -class "Win32_LogicalDisk" -namespace "root\CIMV2" -computername $pc
     $results = foreach ($disk in $disks)

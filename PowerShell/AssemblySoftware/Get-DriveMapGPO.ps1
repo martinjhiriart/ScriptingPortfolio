@@ -1,7 +1,7 @@
 #This formats the name of the report so that we can know when the report was run
-$ExcelReportPath = "C:\Automation\DevTools\Scripts\Hosting DevOps Repo\Output\Results\DriveMappingGPOResults-" + "$(Get-Date -f MM-dd-yyyy)"+".xlsx" 
+$ExcelReportPath = "<FILE PATH FOR FINAL REPORT>\DriveMappingGPOResults-" + "$(Get-Date -f MM-dd-yyyy)"+".xlsx" 
 #Queries the OU where our customer sub-OUs exist, and isolates all of the GPOs linked to those OUs
-$LinkedGPOs  = Get-ADOrganizationalUnit -Filter "*" -SearchBase 'OU=Customers,DC=TWCustomer,DC=local' -SearchScope OneLevel | Select-Object -ExpandProperty LinkedGroupPolicyObjects
+$LinkedGPOs  = Get-ADOrganizationalUnit -Filter "*" -SearchBase '<DISTINGUISHED NAME OF OU THAT DRIVE MAPPING GPOs APPLY TO>' -SearchScope OneLevel | Select-Object -ExpandProperty LinkedGroupPolicyObjects
 #Filters out everything except the GUID for the linked GPOs
 $LinkedGPOGUIDs = $LinkedGPOs | ForEach-object{$_.Substring(4,36)}
 #An array to hold the results of what these GPO GUIDs correspond to

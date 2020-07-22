@@ -14,4 +14,4 @@ foreach($Identity in $ClawsonOldIdentities)
     }
 }
 $SIDMappingArray | Export-Csv -Path "C:\Users\mhiriart\Desktop\ClawsonSIDMappingFile.csv" -NoTypeInformation
-$UserMappingArray | Export-Csv -Path "C:\Users\mhiriart\Desktop\ClawsonUserMappingFile.csv" -NoTypeInformation
+$UserMappingArray | Export-Csv -Path "C:\Users\mhiriart\Desktop\ClawsonUserMappingFile.csv" -NoTypeInformation 

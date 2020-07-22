@@ -21,6 +21,6 @@ foreach($CSUser in $ClawsonUsers)
         Password = $CustomerPassword
     }
     $UserCredsArray += $UserCreds
-
+ 
 }
 $UserCredsArray | Export-Excel -AutoSize -TableName "TWCNewUsers" -WorksheetName "CS TWC Users" -Path "C:\Automation\DevTools\Scripts\Hosting DevOps Repo\Output\Results\ClawsonTWCustomerIdentities.xlsx" -Show

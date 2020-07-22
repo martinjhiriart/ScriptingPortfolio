@@ -1,4 +1,4 @@
-$IPAddresses = Get-DnsServerResourceRecord -ComputerName Hostrex3 -ZoneName "TWCustomer.local"
+$IPAddresses = Get-DnsServerResourceRecord -ComputerName Hostrex3 -ZoneName "<DNS ZONE NAME>"
 $IPObject = foreach($IPAddress in $IPAddresses)
 {
     [PSCustomObject]@{

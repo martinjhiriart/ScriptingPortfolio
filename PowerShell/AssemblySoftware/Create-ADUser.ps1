@@ -5,8 +5,8 @@ function Revan{
     $CustomerADName = Read-Host "Enter User's AD Username"
     $CustomerPassword = Read-Host "Enter User's Password" -AsSecureString
     $CustomerGroupName = Read-Host "Enter Firm OU to create User in"
-    $OUPath = "OU=" + $CustomerGroupName + ",OU=Customers,DC=TWCustomer,DC=local"
-    $CustomerUPN = $CustomerADName+"@TWCustomer.local"
+    $OUPath = "OU=" + $CustomerGroupName + ",<DISTINGUISHED NAME FOR OU WHERE SECURITY GROUP WILL BE CREATED>"
+    $CustomerUPN = $CustomerADName+"@<UPN SUFFIX>"
     New-ADUser -GivenName $CustomerFirstName -Surname $CustomerLastName -Name $CustomerFullName -SamAccountName $CustomerADName -AccountPassword $CustomerPassword -CannotChangePassword $true -PasswordNeverExpires $true -Path $OUPath -Enabled $true -UserPrincipalName $CustomerUPN
     
     Clear-Host
